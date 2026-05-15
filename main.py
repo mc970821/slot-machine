@@ -29,7 +29,7 @@ def get_number_of_lines(machine):
 
 def get_bet(machine):
     while True:
-        amount = input("Каква сума искате да заложите на всяка линия (между ${machine.MIN_BET} и ${machine.MAX_BET})? $")
+        amount = input(f"Каква сума искате да заложите на всяка линия (между ${machine.MIN_BET} и ${machine.MAX_BET})? $")
         if amount.isdigit():
             amount = int(amount)
             if machine.MIN_BET <= amount <= machine.MAX_BET:
