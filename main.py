@@ -29,13 +29,13 @@ def get_number_of_lines(machine):
 
 def get_bet(machine):
     while True:
-        amount = input("Каква сума искате да заложите на всяка линия? $")
+        amount = input("Каква сума искате да заложите на всяка линия (между ${machine.MIN_BET} и ${machine.MAX_BET})? $")
         if amount.isdigit():
             amount = int(amount)
             if machine.MIN_BET <= amount <= machine.MAX_BET:
                 return amount
             else:
-                print(f"Сумата трябва да е между ${machine.MIN_BET} и ${machine.MAX_BET}.")
+                print(f"Сумата трябва да е между ${machine.MIN_BET} и ${machine.MAX_BET}!")
         else:
             print("Моля, въведете число.")
 
@@ -43,17 +43,41 @@ def get_bet(machine):
 def main():
     machine = SlotMachine()
 
-    deposit_amount = get_deposit()
+    deposit_amount = get_deposit() 
     machine.deposit(deposit_amount)
 
     while True:
         print(f"\nТекущ баланс: ${machine.get_balance()}")
-        answer = input("Натиснете ANY KEY за игра или q за изход: ")
+
+        if machine.get_balance() < machine.MIN_BET:
+            print("Балансът ви е недостатъчен за игра.")
+            answer = input("Искате ли да направите нов депозит? Изберете y(за да) или n(за не): ")
+
+            if answer.lower() == "y":
+                deposit_amount = get_deposit()
+                machine.deposit(deposit_amount)
+                continue
+            else:
+                break
+        answer = input("Изберете: p (за игра), d (за депозит), q (за изход): ")
 
         if answer.lower() == "q":
             break
 
+        elif answer.lower() == "d":
+            deposit_amount = get_deposit()
+            machine.deposit(deposit_amount)
+            continue
+
+        elif answer.lower() != "p":
+            print("Невалиден избор.")
+            continue
+
         lines = get_number_of_lines(machine)
+
+        if lines * machine.MIN_BET > machine.get_balance():
+            print("Нямате достатъчно баланс за този брой линии.")
+            continue
 
         while True:
             bet = get_bet(machine)
